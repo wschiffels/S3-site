@@ -2,10 +2,12 @@
 data "template_file" "website" {
   template = file("${path.module}/website.tpl")
   vars = {
-    enable_bucket_encryption = var.enable_bucket_encryption
-    enable_logging           = var.enable_logging
-    enable_versioning        = var.enable_versioning
-    environment              = terraform.workspace
+    enable_bucket_encryption      = var.enable_bucket_encryption
+    enable_logging                = var.enable_logging
+    enable_versioning             = var.enable_versioning
+    environment                   = terraform.workspace
+    sanatized_bucket_name         = local.sanatized_bucket_name
+    sanatized_logging_bucket_name = local.sanatized_logging_bucket_name
   }
 }
 
