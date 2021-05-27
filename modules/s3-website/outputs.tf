@@ -3,7 +3,11 @@ output "s3_bucket_arn" {
 }
 
 output "s3_bucket_name" {
-  value = aws_s3_bucket.bucket.id
+  value = local.sanatized_bucket_name
+}
+
+output "s3_logging_bucket_name" {
+  value = local.sanatized_logging_bucket_name
 }
 
 output "rendered" {

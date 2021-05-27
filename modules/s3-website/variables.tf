@@ -1,11 +1,11 @@
 variable "bucketname" {
   type        = string
-  description = "The name of the bucket"
+  description = "The name of the bucket. Dots will be automatically converted to dashes."
 }
 
 variable "enable_bucket_encryption" {
   type        = bool
-  description = "enable bucket encryption at rest"
+  description = "Enable bucket encryption at rest."
 }
 
 variable "enable_logging" {

@@ -1,15 +1,20 @@
-/* S3 Bucket */
+locals {
+  /* see https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html */
+  sanatized_bucket_name         = substr(lower(replace(var.bucketname, "/[=&#,§|+()$~%.'\"/:*?<>{}]/", "-")), 0, 62)
+  sanatized_logging_bucket_name = format("%s-%s", substr(local.sanatized_bucket_name, 0, 54), "logging")
+}
+
+/* The S3 Website Bucket */
 resource "aws_s3_bucket" "bucket" {
-  acl    = "public-read"
-  bucket = replace(var.bucketname, ".", "-")
+  bucket = local.sanatized_bucket_name
 
   versioning {
     enabled = var.enable_versioning
   }
 
   website {
-    index_document = "index.html"
     error_document = "error.html"
+    index_document = "index.html"
   }
 
   dynamic "server_side_encryption_configuration" {
@@ -18,7 +23,8 @@ resource "aws_s3_bucket" "bucket" {
     content {
       rule {
         apply_server_side_encryption_by_default {
-          sse_algorithm = "AES256"
+          kms_master_key_id = aws_kms_key.key.arn
+          sse_algorithm     = "aws:kms"
         }
       }
     }
@@ -29,18 +35,13 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
-/* ToDo:
-   optional logging (=> new S3 bucket for logs)
-   routing_rules
-*/
-
-/* S3 Bucket Policy */
+/* S3 Website Bucket Policy */
 resource "aws_s3_bucket_policy" "bucket-policy" {
   bucket = aws_s3_bucket.bucket.id
   policy = data.aws_iam_policy_document.policy-document.json
 }
 
-/* IAM Policy Document */
+/* IAM Policy Document for Bucket Policy */
 data "aws_iam_policy_document" "policy-document" {
   statement {
     actions = [
@@ -58,11 +59,11 @@ data "aws_iam_policy_document" "policy-document" {
   }
 }
 
-/* Logging Bucket (optional) */
+/* The Logging Bucket (optional) */
 resource "aws_s3_bucket" "logging" {
   count = var.enable_logging == true ? 1 : 0
 
-  bucket = replace(format("%s-%s", var.bucketname, "logging"), ".", "-")
+  bucket = local.sanatized_logging_bucket_name
   acl    = "private"
 
   lifecycle_rule {
