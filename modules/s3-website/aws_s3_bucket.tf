@@ -4,6 +4,15 @@ locals {
   sanatized_logging_bucket_name = format("%s-%s", substr(local.sanatized_bucket_name, 0, 54), "logging")
 }
 
+module "cloudfront-distribution" {
+  count = var.enable_cloudfront_distribution == true ? 1 : 0
+
+  source                    = "../module-cloudfront-distribution"
+  cloudfront_logging_bucket = aws_s3_bucket.logging[0].id
+  domain_name               = aws_s3_bucket.bucket.website_domain
+  s3_origin_id              = aws_s3_bucket.bucket.id
+}
+
 /* The S3 Website Bucket */
 resource "aws_s3_bucket" "bucket" {
   bucket = local.sanatized_bucket_name
@@ -22,6 +31,7 @@ resource "aws_s3_bucket" "bucket" {
 
     content {
       rule {
+        bucket_key_enabled = true
         apply_server_side_encryption_by_default {
           kms_master_key_id = aws_kms_key.key.arn
           sse_algorithm     = "aws:kms"
@@ -66,14 +76,16 @@ resource "aws_s3_bucket" "logging" {
   bucket = local.sanatized_logging_bucket_name
   acl    = "private"
 
-  lifecycle_rule {
-    enabled = true
+  dynamic "lifecycle_rule" {
+    for_each = var.logging_bucket_lifecycle_enabled ? ["true"] : []
+    content {
+      enabled = true
 
-    expiration {
-      days = 30
+      expiration {
+        days = var.logging_bucket_expiration_days
+      }
     }
   }
-
   tags = {
     "Environment" = terraform.workspace
   }

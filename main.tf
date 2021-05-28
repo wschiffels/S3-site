@@ -10,10 +10,13 @@ variable "base_url" {
 module "s3-website" {
   source = "./modules/s3-website"
 
-  bucketname               = var.base_url[terraform.workspace]
-  enable_bucket_encryption = terraform.workspace == "live" ? true : false
-  enable_logging           = true
-  enable_versioning        = true
+  bucketname                       = "bucket" #var.base_url[terraform.workspace]
+  enable_bucket_encryption         = "true"   #terraform.workspace == "live" ? true : false
+  enable_logging                   = true
+  enable_versioning                = true
+  logging_bucket_lifecycle_enabled = true
+  logging_bucket_expiration_days   = 15
+  enable_cloudfront_distribution   = true
 }
 
 # http(s)://<bucket>.s3.amazonaws.com/<object>
