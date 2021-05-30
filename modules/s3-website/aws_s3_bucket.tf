@@ -9,7 +9,7 @@ module "cloudfront-distribution" {
 
   source                    = "../module-cloudfront-distribution"
   cloudfront_logging_bucket = aws_s3_bucket.logging[0].id
-  domain_name               = aws_s3_bucket.bucket.website_domain
+  domain_name               = aws_s3_bucket.bucket.website_endpoint
   s3_origin_id              = aws_s3_bucket.bucket.id
 }
 

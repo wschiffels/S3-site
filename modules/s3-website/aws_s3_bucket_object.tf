@@ -1,3 +1,6 @@
+/* get the provider config for website rendering*/
+data "aws_region" "current" {}
+
 /* Renders the website (index.html) */
 data "template_file" "website" {
   template = file("${path.module}/website.tpl")
@@ -8,6 +11,7 @@ data "template_file" "website" {
     environment                   = terraform.workspace
     sanatized_bucket_name         = local.sanatized_bucket_name
     sanatized_logging_bucket_name = local.sanatized_logging_bucket_name
+    aws-region                    = data.aws_region.current.name
   }
 }
 

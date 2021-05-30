@@ -70,6 +70,7 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_bucketname"></a> [bucketname](#input\_bucketname) | The name of the bucket. Bucket naming rules will be enforced. | `string` | n/a | yes |
 | <a name="input_enable_bucket_encryption"></a> [enable\_bucket\_encryption](#input\_enable\_bucket\_encryption) | Enable bucket encryption at rest. | `bool` | n/a | yes |
+| <a name="input_enable_cloudfront_distribution"></a> [enable\_cloudfront\_distribution](#input\_enable\_cloudfront\_distribution) | enable cloudfront distribution for the website | `bool` | n/a | yes |
 | <a name="input_enable_logging"></a> [enable\_logging](#input\_enable\_logging) | Enable logging. Logs will be purged after 30 days. | `bool` | n/a | yes |
 | <a name="input_enable_versioning"></a> [enable\_versioning](#input\_enable\_versioning) | Enable s3 bucket versioning. | `bool` | n/a | yes |
 | <a name="input_logging_bucket_expiration_days"></a> [logging\_bucket\_expiration\_days](#input\_logging\_bucket\_expiration\_days) | Period after which the logging object expire | `number` | `30` | no |
@@ -81,5 +82,7 @@ No requirements.
 |------|-------------|
 | <a name="output_rendered"></a> [rendered](#output\_rendered) | The contents of the rendered index document. |
 | <a name="output_s3_bucket_arn"></a> [s3\_bucket\_arn](#output\_s3\_bucket\_arn) | The Bucket's ARN. |
+| <a name="output_s3_bucket_domain_name"></a> [s3\_bucket\_domain\_name](#output\_s3\_bucket\_domain\_name) | The bucket domain name |
 | <a name="output_s3_bucket_name"></a> [s3\_bucket\_name](#output\_s3\_bucket\_name) | The sanitized name of the bucket. |
 | <a name="output_s3_logging_bucket_name"></a> [s3\_logging\_bucket\_name](#output\_s3\_logging\_bucket\_name) | The sanitized name of the logging bucket. |
+| <a name="output_s3_website_endpoint"></a> [s3\_website\_endpoint](#output\_s3\_website\_endpoint) | The website endpoint, if the bucket is configured with a website. |
