@@ -40,6 +40,15 @@ resource "aws_s3_bucket" "bucket" {
     }
   }
 
+  dynamic "logging" {
+    for_each = var.enable_logging ? ["true"] : []
+
+    content {
+      target_bucket = aws_s3_bucket.logging[0].id
+      target_prefix = "log/"
+    }
+  }
+
   tags = {
     "Environment" = terraform.workspace
   }
